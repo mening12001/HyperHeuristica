@@ -1,13 +1,18 @@
 import json
 
 import numpy
+from opfunu.cec_based import F42022
 
 from evaluation.Trial import Trial
 from evaluation.functions.cec_objective_functions import F102022, F102022_10, F112022_10, F12022_10, F72021_10, \
-    F82022_10, F12020_5, F42020_10, F72022_10, F92022_10, F22022_10
+    F82022_10, F12020_5, F42020_10, F72022_10, F92022_10, F22022_10, F32022_10, F42022_10, F52022_10, F62022_10, \
+    F122022_10
+from hyperheuristic.DEHyperHeuristic import DEHyperHeuristic
 from hyperheuristic.ESSAHyperHeuristic import ESSAHyperHeuristic
 from evaluation.functions.objective_functions import *
 from metaheuristic.DE.DEHeuristic import DEHeuristic
+from metaheuristic.DE.LSHADEHeuristic import LSHADEHeuristic
+from metaheuristic.DE.SHADEHeuristic import SHADEHeuristic
 from metaheuristic.abc.ABCHeuristic import ABCHeuristic
 from metaheuristic.acor.ACORHeuristic import ACORHeuristic
 from metaheuristic.ao.AOHeuristic import AOHeuristic
@@ -96,13 +101,44 @@ class Evaluator:
         {'objective_func': F22022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
          'global_value': 400, 'name': "F2: Shifted and Rotated Rosenbrock’s Function"}
     ]
+    problems = [{'objective_func': F32022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 600, 'name': "F3: Shifted and full Rotated Expanded Schaffer’s F7"},
+                {'objective_func': F42022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 800, 'name': "F4: Shifted and Rotated Non-Continuous Rastrigin’s Function"},
+                {'objective_func': F52022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 900, 'name': "F5: Shifted and Rotated Levy Function"},
+                {'objective_func': F62022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 1800, 'name': "F6: Hybrid Function 1"},
+                {'objective_func': F122022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 2700, 'name': "F12: Composition Function 4"},
+                {'objective_func': F102022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 2400, 'name': "F10: Composition Function 2"},
+                {'objective_func': F112022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 2600, 'name': "F11: Composition Function 3"},
+                {'objective_func': F12022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 300, 'name': "F1: Shifted and full Rotated Zakharov Function"},
+                {'objective_func': F82022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 2200, 'name': "F8: Hybrid Function 3"},
+                {'objective_func': F72022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 2000, 'name': "F7: Hybrid Function 2"},
+                {'objective_func': F92022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 2300, 'name': "F9: Composition Function 1"},
+                {'objective_func': F22022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+                 'global_value': 400, 'name': "F2: Shifted and Rotated Rosenbrock’s Function"}
+                ]
 
-    heuristics = [ESSAHyperHeuristic(), HHOHeuristic(), HGSHeuristic(), SSAHeuristic(), BESHeuristic(), SMAHeuristic(), CGOHeuristic(),
-                  WOAHeuristic(), SCAHeuristic(), AOHeuristic(), FFAHeuristic(), ACORHeuristic(), PSOHeuristic(), CROHeuristic(), AOAHeuristic(),
+    heuristics = [ESSAHyperHeuristic(), HHOHeuristic(), HGSHeuristic(), SSAHeuristic(), BESHeuristic(), SMAHeuristic(),
+                  CGOHeuristic(),
+                  WOAHeuristic(), SCAHeuristic(), AOHeuristic(), FFAHeuristic(), ACORHeuristic(), PSOHeuristic(),
+                  CROHeuristic(), AOAHeuristic(),
                   DEHeuristic(), ABCHeuristic(), FPAHeuristic(), GAHeuristic(), MFOHeuristic(), FAHeuristic()]
 
-    heuristics = [ESSAHyperHeuristic(), SSAHeuristic(), WOAHeuristic(), CGOHeuristic(), BESHeuristic(), HHOHeuristic(), HGSHeuristic(),
-                  SMAHeuristic(), DEHeuristic(), GAHeuristic(), SCAHeuristic(), AOHeuristic(), ACORHeuristic(), ABCHeuristic(), FPAHeuristic(), PSOHeuristic()]
+    heuristics = [ESSAHyperHeuristic(), SSAHeuristic(), WOAHeuristic(), CGOHeuristic(), BESHeuristic(), HHOHeuristic(),
+                  HGSHeuristic(),
+                  SMAHeuristic(), DEHeuristic(), GAHeuristic(), SCAHeuristic(), AOHeuristic(), ACORHeuristic(),
+                  ABCHeuristic(), FPAHeuristic(), PSOHeuristic()]
+
+    heuristics = [DEHyperHeuristic(), SHADEHeuristic(), LSHADEHeuristic()]
 
     def evaluate(self, from_file=False, verbose=True, nr_executions=10):
         trials = []
@@ -114,7 +150,8 @@ class Evaluator:
                 rank_results = trial.obtain_rank_verbose_from_file() if from_file is True else trial.obtain_rank_verbose()
             else:
                 rank_results = trial.obtain_rank_from_file() if from_file is True else trial.obtain_rank()
-            print(trial.problem['objective_func'].__name__, dict(sorted(rank_results.items(), key=lambda item: item[1])))
+            print(trial.problem['objective_func'].__name__,
+                  dict(sorted(rank_results.items(), key=lambda item: item[1])))
             for key in rank_results:
                 results[key] += rank_results[key] / len(trials)
         ranking = dict(sorted(results.items(), key=lambda item: item[1]))
