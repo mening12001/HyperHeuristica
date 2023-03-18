@@ -9,6 +9,8 @@ from evaluation.functions.cec_objective_functions import F102022, F102022_10, F1
     F122022_10
 from hyperheuristic.DEHyperHeuristic import DEHyperHeuristic
 from hyperheuristic.ESSAHyperHeuristic import ESSAHyperHeuristic
+from hyperheuristic.EBESHyperHeuristic import EBESHyperHeuristic
+
 from evaluation.functions.objective_functions import *
 from metaheuristic.DE.DEHeuristic import DEHeuristic
 from metaheuristic.DE.LSHADEHeuristic import LSHADEHeuristic
@@ -138,7 +140,9 @@ class Evaluator:
                   SMAHeuristic(), DEHeuristic(), GAHeuristic(), SCAHeuristic(), AOHeuristic(), ACORHeuristic(),
                   ABCHeuristic(), FPAHeuristic(), PSOHeuristic()]
 
-    heuristics = [DEHyperHeuristic(), SHADEHeuristic(), LSHADEHeuristic()]
+    heuristics = [DEHyperHeuristic(), ESSAHyperHeuristic(), SSAHeuristic(), SHADEHeuristic(), LSHADEHeuristic(), DEHeuristic(),
+                  EBESHyperHeuristic(), BESHeuristic(), WOAHeuristic(), CGOHeuristic(), HHOHeuristic(),
+                  HGSHeuristic(), SMAHeuristic()]
 
     def evaluate(self, from_file=False, verbose=True, nr_executions=10):
         trials = []
