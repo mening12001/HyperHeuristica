@@ -106,6 +106,18 @@ class Trial:
                 ranks[heuristic.__class__.__name__] = self.assign_rank(last_results, self.problem['global_value'])
         return ranks
 
+    def obtain_median_rank_verbose_from_file(self):
+        ranks = {}
+        for heuristic in self.heuristics:
+            with open(self.problem[
+                          "objective_func"].__name__ + '_' + heuristic.__class__.__name__ + '_histogram.json') as json_file:
+                results = json.load(json_file)
+                if 'time' in results:
+                    del results['time']
+                last_results = [ results[key][-1] for key in results]
+                ranks[heuristic.__class__.__name__] = self.assign_median_rank(last_results, self.problem['global_value'])
+        return ranks
+
     def plot_convergence(self):
         colors = ['black', 'blue', 'brown', 'green', 'purple', 'cyan', 'magenta', 'yellow']
         for idx, heuristic in enumerate(self.heuristics):
@@ -171,3 +183,12 @@ class Trial:
             rank = (value - global_value) / denominator
             final_rank += rank
         return final_rank / len(values)
+
+    def assign_median_rank(self, values, global_value):
+        ranks = []
+        denominator = abs(global_value) if global_value != 0 else 1
+        for value in values:
+            rank = (value - global_value) / denominator
+            ranks.append(rank)
+        ranks.sort()
+        return ranks[(len(ranks) + 1)//2]

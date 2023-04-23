@@ -163,6 +163,31 @@ class Evaluator:
             json.dump(ranking, outfile)
         return ranking
 
+    def friedman_ranking_from_file(self, significance=0.0000001,  nr_executions=10):
+        trials = []
+        results = {heuristic.__class__.__name__: 0 for heuristic in self.heuristics}
+        for problem in self.problems:
+            trials.append(Trial(problem=problem, heuristics=self.heuristics, nr_executions=nr_executions))
+        for trial in trials:
+            rank_results = trial.obtain_median_rank_verbose_from_file()
+            values = sorted(set(rank_results.values()))
+            inverted_results = {v: k for k, v in rank_results.items()}
+            start_index = 0
+            index_sum = 1
+            for index in range(1, len(values)):
+                if values[index] - values[index - 1] <= significance:
+                    index_sum += (index + 1)
+                else:
+                    rank = index_sum/(index - start_index)
+                    index_sum = index
+                    for index2 in range(start_index, index):
+                        results[inverted_results[values[index2]]] += rank/len(trials)
+                    start_index = index
+        ranking = dict(sorted(results.items(), key=lambda item: item[1]))
+        with open('friedman_results.json', 'w') as outfile:
+            json.dump(ranking, outfile)
+        return ranking
+
     def plot_convergence_from_file(self, nr_executions=10):
         for problem in self.problems:
             trial = Trial(problem=problem, heuristics=self.heuristics, nr_executions=nr_executions)
