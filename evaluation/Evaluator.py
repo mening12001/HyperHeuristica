@@ -170,7 +170,7 @@ class Evaluator:
             trials.append(Trial(problem=problem, heuristics=self.heuristics, nr_executions=nr_executions))
         for trial in trials:
             rank_results = trial.obtain_median_rank_verbose_from_file()
-            values = sorted(set(rank_results.values()))
+            values = sorted(rank_results.values())
             inverted_results = {v: k for k, v in rank_results.items()}
             start_index = 0
             index_sum = 1
