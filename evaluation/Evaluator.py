@@ -144,6 +144,8 @@ class Evaluator:
                   EBESHyperHeuristic(), BESHeuristic(), WOAHeuristic(), CGOHeuristic(), HHOHeuristic(),
                   HGSHeuristic(), SMAHeuristic()]
 
+
+
     def evaluate(self, from_file=False, verbose=True, nr_executions=10):
         trials = []
         results = {heuristic.__class__.__name__: 0 for heuristic in self.heuristics}
@@ -171,7 +173,7 @@ class Evaluator:
         for trial in trials:
             rank_results = trial.obtain_median_rank_verbose_from_file()
             values = sorted(rank_results.values())
-            inverted_results = {v: k for k, v in rank_results.items()}
+            sorted_methods = sorted(rank_results.items(), key=lambda x: x[1])
             start_index = 0
             index_sum = 1
             for index in range(1, len(values)):
@@ -181,7 +183,7 @@ class Evaluator:
                     rank = index_sum/(index - start_index)
                     index_sum = index
                     for index2 in range(start_index, index):
-                        results[inverted_results[values[index2]]] += rank/len(trials)
+                        results[sorted_methods[index2][0]] += rank/len(trials)
                     start_index = index
         ranking = dict(sorted(results.items(), key=lambda item: item[1]))
         with open('friedman_results.json', 'w') as outfile:
