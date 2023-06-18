@@ -7,6 +7,7 @@ import random
 import numpy as np
 
 from hyperheuristic.orchestrator.metrics.RelativeConvergenceMetric import RelativeConvergenceMetric
+from hyperheuristic.orchestrator.metrics.RelativeDiversityMetric import RelativeDiversityMetric
 
 
 class Orchestrator(metaclass=abc.ABCMeta):
@@ -15,6 +16,7 @@ class Orchestrator(metaclass=abc.ABCMeta):
     objective_func = 0
     window_size = 0
     convergence_metric = RelativeConvergenceMetric(set_divisor=3)
+    diversity_metric = RelativeDiversityMetric()
     maximize = True
     overall_solutions_state = None
     overall_global_solutions_state = None
@@ -31,13 +33,13 @@ class Orchestrator(metaclass=abc.ABCMeta):
         self.bounds = bounds
 
     @abc.abstractmethod
-    def compose(self, population):
+    def compose(self, population, tournament_proportion=None):
         pass
 
-    def orchestrate(self, population):
+    def orchestrate(self, population, tournament_proportion=None):
         ensemble_solutions_history = []
         ensemble_last_solutions = []
-        agent_ensemble = self.compose(population)
+        agent_ensemble = self.compose(population, tournament_proportion)
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = {executor.submit(agent.solve): agent for agent in agent_ensemble}
@@ -48,6 +50,12 @@ class Orchestrator(metaclass=abc.ABCMeta):
                                                     solutions_per_iteration[self.window_size - 1])
 
         convergence_coefficients = self.convergence_metric.compute(ensemble_solutions_history, self.maximize)
+        #diversity_coefficients = self.diversity_metric.compute(ensemble_solutions_history, self.maximize)
+
+        #for i in range(0, len(convergence_coefficients)):
+            #convergence_coefficients[i] = 0.6 * convergence_coefficients[i] + 0.4 * diversity_coefficients[i]
+
+
         if self.maximize is True:
             ensemble_global_solution = max(ensemble_last_solutions, key=attrgetter('value'))
         else:
@@ -63,10 +71,10 @@ class Orchestrator(metaclass=abc.ABCMeta):
         self.overall_solutions_state = ensemble_last_solutions
         self.overall_global_solutions_state = ensemble_global_solutions
 
-    def tournament_selection(self, ensemble_solutions, n_quota_of_solutions):
+    def tournament_selection(self, ensemble_solutions, n_quota_of_solutions, tournament_proportion = 0.5):
         if ensemble_solutions is None:
             return None
         temp_ensemble_solutions = copy.deepcopy(ensemble_solutions)
-        selected = random.choices(temp_ensemble_solutions, k=len(ensemble_solutions) // 2)
+        selected = random.choices(temp_ensemble_solutions, k=int(len(ensemble_solutions) * tournament_proportion))
         selected = sorted(selected, key=lambda p: p.value, reverse=self.maximize)[:n_quota_of_solutions]
         return selected

@@ -1,5 +1,7 @@
 import numpy
-from pygad import GA, matplotlib
+from pygad import  matplotlib
+
+from hyperheuristic.genetic.pygad import GA
 
 
 class HyperGA(GA):
@@ -44,7 +46,8 @@ class HyperGA(GA):
                  save_best_solutions=False,
                  save_solutions=False,
                  suppress_warnings=False,
-                 stop_criteria=None):
+                 stop_criteria=None,
+                 tournament_proportion_function=None):
         GA.__init__(self,
                     num_generations,
                     num_parents_mating,
@@ -84,19 +87,29 @@ class HyperGA(GA):
                     stop_criteria)
         self.orchestrator = orchestrator
         self.best_actual_solutions = []
+        self.tournament_size_function = tournament_proportion_function
 
     def irrelevant_fitness_func(solution, solution_idx):
         return 0
 
-    def cal_pop_fitness(self):
+
+
+
+
+    def cal_pop_fitness(self, generation=None):
 
         if self.valid_parameters == False:
             raise ValueError(
                 "ERROR calling the cal_pop_fitness() method: \nPlease check the parameters passed while creating an instance of the GA class.\n")
 
         pop_fitness = []
-        ensemble_best_particles, aptitude_coefficients, ensemble_global_particle = self.orchestrator.orchestrate(
-            self.population)
+
+        if self.tournament_size_function != None:
+            ensemble_best_particles, aptitude_coefficients, ensemble_global_particle = self.orchestrator.orchestrate(
+                self.population, self.tournament_size_function(generation))
+        else:
+            ensemble_best_particles, aptitude_coefficients, ensemble_global_particle = self.orchestrator.orchestrate(self.population)
+
         for sol_idx, sol in enumerate(self.population):
             pop_fitness.append(aptitude_coefficients[sol_idx])
 

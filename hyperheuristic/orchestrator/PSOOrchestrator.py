@@ -5,7 +5,7 @@ from operator import attrgetter
 import numpy as np
 import random
 
-from hyperheuristic.orchestrator.metrics.RelativeDiversityMetric import DiversityMetric
+from hyperheuristic.orchestrator.metrics.RelativeDiversityMetric import RelativeDiversityMetric
 from hyperheuristic.interceptor.Exchanger import Exchanger
 from hyperheuristic.orchestrator.metrics.RelativeConvergenceMetric import RelativeConvergenceMetric
 from hyperheuristic.agent.pso.PSOAgent import PSOAgent
@@ -17,7 +17,7 @@ class PSOOrchestrator:
     objective_func = 0
     window_size = 0
     covergence_metric = RelativeConvergenceMetric(set_divisor=3)
-    diversity_metric = DiversityMetric()
+    diversity_metric = RelativeDiversityMetric()
     maximize = True
     overall_particles_state = None
     overall_global_particle_state = None
@@ -33,7 +33,7 @@ class PSOOrchestrator:
         self.bounds = bounds
 
 
-    def compose(self, population):
+    def compose(self, population, tournament_size=None):
         pso_ensemble = []
         for id, genome_agent in enumerate(population):
             options = {'c1': genome_agent[0], 'c2': genome_agent[1]#, 'c3': genome_agent[2]

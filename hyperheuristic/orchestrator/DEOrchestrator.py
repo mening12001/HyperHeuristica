@@ -9,7 +9,7 @@ class DEOrchestrator(Orchestrator):
                  window_size, maximize=True):
         super().__init__(objective_func, dimensions, bounds, n_quota_of_particles, window_size, maximize)
 
-    def compose(self, population):
+    def compose(self, population, tournament_proportion=None):
         agent_ensemble = []
         for id, genome_agent in enumerate(population):
             options = {'wf': genome_agent[0], 'cr': genome_agent[1]
@@ -27,8 +27,12 @@ class DEOrchestrator(Orchestrator):
 
             agent = DEAgent(id=id, problem=problem_dict1, epoch=self.window_size,
                             pop_size=self.n_quota_of_solutions, wf=options['wf'], cr=options['cr'], strategy=options['strategy'])
-            initial_solutions = self.tournament_selection(self.overall_solutions_state,
-                                                          self.n_quota_of_solutions)
+            if tournament_proportion != None:
+                initial_solutions = self.tournament_selection(self.overall_solutions_state,
+                                                              self.n_quota_of_solutions, tournament_proportion)
+            else:
+                initial_solutions = self.tournament_selection(self.overall_solutions_state,
+                                                              self.n_quota_of_solutions)
             agent.init_initial_positions(initial_solutions)
             agent_ensemble.append(agent)
         return agent_ensemble

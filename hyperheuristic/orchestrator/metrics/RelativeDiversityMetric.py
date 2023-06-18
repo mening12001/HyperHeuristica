@@ -5,7 +5,7 @@ import numpy
 from hyperheuristic.orchestrator.metrics.Metric import Metric
 
 
-class DiversityMetric(Metric):
+class RelativeDiversityMetric(Metric):
 
     def compute(self, ensemble_particles_history, maximize=True):
         overall_standard_deviation_per_iteration = {}
@@ -16,7 +16,7 @@ class DiversityMetric(Metric):
                 standard_deviation = self.compute_standard_deviation(particles)
                 merged_standard_deviation.append(standard_deviation)
                 overall_standard_deviation_per_iteration[iteration] = merged_standard_deviation
-        return self.compute_diversity_coefficients_2(overall_standard_deviation_per_iteration)
+        return self.compute_diversity_coefficients(overall_standard_deviation_per_iteration)
 
     def compute_standard_deviation(self, particles):
         id = particles[0].id

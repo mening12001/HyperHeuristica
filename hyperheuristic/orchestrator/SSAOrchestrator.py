@@ -8,7 +8,7 @@ class SSAOrchestrator(Orchestrator):
                  window_size, maximize=True):
         super().__init__(objective_func, dimensions, bounds, n_quota_of_particles, window_size, maximize)
 
-    def compose(self, population):
+    def compose(self, population, tournament_proportion=None):
         agent_ensemble = []
         for id, genome_agent in enumerate(population):
             options = {'ST': genome_agent[0], 'PD': genome_agent[1]

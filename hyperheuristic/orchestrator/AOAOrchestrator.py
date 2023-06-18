@@ -10,7 +10,7 @@ class AOAOrchestrator(Orchestrator):
         super().__init__(objective_func, dimensions, bounds, n_quota_of_particles, window_size, maximize)
         self.overall_nr_iterations = overall_nr_iterations
 
-    def compose(self, population):
+    def compose(self, population, tournament_proportion=None):
         aoa_ensemble = []
         for id, genome_agent in enumerate(population):
             options = {'alpha': genome_agent[0], 'miu': genome_agent[1]

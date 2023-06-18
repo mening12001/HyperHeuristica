@@ -127,13 +127,38 @@ class DEAgent(Optimizer):
                           self.wf * (self.pop[idx_list[0]][self.ID_POS] - self.pop[idx_list[1]][self.ID_POS])
                 pos_new = self._mutation__(self.pop[idx][self.ID_POS], pos_new)
                 pop.append([pos_new, None])
-        else:
+        elif self.strategy == 5:
             for idx in range(0, self.pop_size):
                 idx_list = np.random.choice(list(set(range(0, self.pop_size)) - {idx}), 3, replace=False)
                 pos_new = self.pop[idx][self.ID_POS] + self.wf * (self.pop[idx_list[0]][self.ID_POS] - self.pop[idx][self.ID_POS]) + \
                           self.wf * (self.pop[idx_list[1]][self.ID_POS] - self.pop[idx_list[2]][self.ID_POS])
                 pos_new = self._mutation__(self.pop[idx][self.ID_POS], pos_new)
                 pop.append([pos_new, None])
+        elif self.strategy == 6:
+            for idx in range(0, self.pop_size):
+                idx_list = np.random.choice(list(set(range(0, self.pop_size)) - {idx}), 3, replace=False)
+                temp_pop = [self.pop[idx_list[0]], self.pop[idx_list[1]], self.pop[idx_list[2]]]
+                if self.problem.minmax == "min":
+                    sorted_pop = sorted(temp_pop, key=lambda agent: agent[self.ID_TAR][self.ID_FIT])
+                else:
+                    sorted_pop = sorted(temp_pop, key=lambda agent: agent[self.ID_TAR][self.ID_FIT], reverse=True)
+                pos_new = self.pop[idx][self.ID_POS] + self.wf * (
+                            sorted_pop[0][self.ID_POS] - self.pop[idx][self.ID_POS]) + \
+                          self.wf * (sorted_pop[1][self.ID_POS] - sorted_pop[2][self.ID_POS])
+                pos_new = self._mutation__(self.pop[idx][self.ID_POS], pos_new)
+                pop.append([pos_new, None])
+        else:
+                    for idx in range(0, self.pop_size):
+                        idx_list = np.random.choice(list(set(range(0, self.pop_size)) - {idx}), 3, replace=False)
+                        if self.pop[idx_list[0]][self.ID_TAR][self.ID_FIT] < self.pop[idx_list[1]][self.ID_TAR][self.ID_FIT]:
+                            pos_new = self.pop[idx_list[0]][self.ID_POS] + self.wf * \
+                                      (self.pop[idx_list[1]][self.ID_POS] - self.pop[idx_list[2]][self.ID_POS])
+                        else:
+                            pos_new = self.pop[idx_list[1]][self.ID_POS] + self.wf * (
+                                    self.pop[idx_list[0]][self.ID_POS] - self.pop[idx_list[2]][self.ID_POS])
+                        pos_new = self._mutation__(self.pop[idx][self.ID_POS], pos_new)
+                        pop.append([pos_new, None])
+
         pop = self.update_target_wrapper_population(pop)
 
         # create new pop by comparing fitness of corresponding each member in pop and children

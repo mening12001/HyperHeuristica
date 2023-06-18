@@ -17,7 +17,7 @@ class SSAOrchestrator2(Orchestrator):
                  window_size, maximize=True):
         super().__init__(objective_func, dimensions, bounds, n_quota_of_particles, window_size, maximize)
 
-    def compose(self, population):
+    def compose(self, population, tournament_proportion=None):
         agent_ensemble = []
         for id, genome_agent in enumerate(population):
             options = {'ST': genome_agent[0], 'PD': genome_agent[1]
@@ -56,7 +56,7 @@ class SSAOrchestrator2(Orchestrator):
                                                     solutions_per_iteration[self.window_size - 1])
 
         consistency_coefficient = self.consistency_metric.compute(ensemble_solutions_history, self.maximize)
-        while consistency_coefficient < 0.40 and len(ensemble_solutions_history[0]) < 15:
+        while consistency_coefficient < 0.40 and len(ensemble_solutions_history[0]) < 8:
             ensemble_solutions_history = []
             ensemble_last_solutions = []
             with concurrent.futures.ThreadPoolExecutor() as executor:

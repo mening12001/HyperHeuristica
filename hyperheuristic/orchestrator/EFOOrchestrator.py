@@ -7,14 +7,14 @@ import random
 
 from hyperheuristic.agent.efo.EFOAgent import EFOAgent
 from hyperheuristic.orchestrator.Orchestrator import Orchestrator
-from hyperheuristic.orchestrator.metrics.RelativeDiversityMetric import DiversityMetric
+from hyperheuristic.orchestrator.metrics.RelativeDiversityMetric import RelativeDiversityMetric
 from hyperheuristic.interceptor.Exchanger import Exchanger
 from hyperheuristic.orchestrator.metrics.RelativeConvergenceMetric import RelativeConvergenceMetric
 
 
 class EFOOrchestrator(Orchestrator):
 
-    def compose(self, population):
+    def compose(self, population, tournament_proportion=None):
         efo_ensemble = []
         for id, genome_agent in enumerate(population):
             options = {'r_rate': genome_agent[0], 'ps_rate': genome_agent[1],

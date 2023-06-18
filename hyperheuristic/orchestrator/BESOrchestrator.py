@@ -4,7 +4,7 @@ from hyperheuristic.orchestrator.Orchestrator import Orchestrator
 
 class BESOrchestrator(Orchestrator):
 
-    def compose(self, population):
+    def compose(self, population, tournament_proportion=None):
         bes_ensemble = []
         for id, genome_agent in enumerate(population):
             options = {'a_factor': genome_agent[0], 'R_factor': genome_agent[1],
