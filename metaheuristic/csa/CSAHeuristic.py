@@ -1,17 +1,17 @@
+from metaheuristic.csa import CSA
 
-from metaheuristic.cgo import CGO
 
-class CGOHeuristic:
+class CSAHeuristic:
 
     def optimize(self, objective_func, dimensions, bounds, nr_iterations=200):
         lb, ub = bounds
         problem_dict1 = {
             "fit_func": objective_func,
-            "lb": [lb[i] for i in range(0, dimensions)],
-            "ub": [ub[i] for i in range(0, dimensions)],
+            "lb": [lb[0], ] * dimensions,
+            "ub": [ub[0], ] * dimensions,
             "minmax": "min",
             "log_to": 'console',
             "save_population": False,
         }
-        model = CGO.OriginalCGO(problem_dict1, epoch=1000, pop_size=200)
+        model = CSA.BaseCSA(problem_dict1, epoch=nr_iterations, pop_size=200)
         return model.solve()

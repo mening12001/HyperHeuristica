@@ -7,7 +7,10 @@ from evaluation.Trial import Trial
 from evaluation.functions.cec_objective_functions import F102022, F102022_10, F112022_10, F12022_10, F72021_10, \
     F82022_10, F12020_5, F42020_10, F72022_10, F92022_10, F22022_10, F32022_10, F42022_10, F52022_10, F62022_10, \
     F122022_10
+#from evaluation.functions.engineering_problems import spring_func
+from evaluation.functions.engineering_problems import spring_func, welded_func, beam_func, speed_func, rolling_func
 from hyperheuristic.DEHyperHeuristic import DEHyperHeuristic
+from hyperheuristic.DEHyperHeuristic2 import DEHyperHeuristic2
 from hyperheuristic.ESSAHyperHeuristic import ESSAHyperHeuristic
 from hyperheuristic.EBESHyperHeuristic import EBESHyperHeuristic
 
@@ -21,18 +24,23 @@ from metaheuristic.ao.AOHeuristic import AOHeuristic
 from metaheuristic.bes.BESHeuristic import BESHeuristic
 from metaheuristic.cgo.CGOHeuristic import CGOHeuristic
 from metaheuristic.cro.CROHeuristic import CROHeuristic
+from metaheuristic.csa.CSAHeuristic import CSAHeuristic
 from metaheuristic.fa.FAHeuristic import FAHeuristic
 from metaheuristic.ffa.FFAHeuristic import FFAHeuristic
 from metaheuristic.fpa.FPAHeuristic import FPAHeuristic
 from metaheuristic.ga.GAHeuristic import GAHeuristic
 from metaheuristic.hgs.HGSHeuristic import HGSHeuristic
 from metaheuristic.mfo.MFOHeuristic import MFOHeuristic
+from metaheuristic.msa.MSAHeuristic import MSAHeuristic
 from metaheuristic.pso.PSOHeuristic import PSOHeuristic
 from metaheuristic.sca.SCAHeuristic import SCAHeuristic
 from metaheuristic.sma.SMAHeuristic import SMAHeuristic
 from metaheuristic.aoa.AOAHeuristic import AOAHeuristic
 from metaheuristic.hho.HHOHeuristic import HHOHeuristic
 from metaheuristic.ssa.SSAHeuristic import SSAHeuristic
+from metaheuristic.triangle.TCO2Heuristic import TCO2Heuristic
+from metaheuristic.triangle.TCO3Heuristic import TCO3Heuristic
+from metaheuristic.triangle.TCOHeuristic import TCOHeuristic
 from metaheuristic.woa.WOAHeuristic import WOAHeuristic
 
 
@@ -103,31 +111,50 @@ class Evaluator:
         {'objective_func': F22022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
          'global_value': 400, 'name': "F2: Shifted and Rotated Rosenbrock’s Function"}
     ]
-    problems = [{'objective_func': F32022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+    problems = [
+
+       {'objective_func': F12022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+         'global_value': 300, 'name': "F1: Shifted and full Rotated Zakharov Function"},
+        {'objective_func': F22022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+         'global_value': 400, 'name': "F2: Shifted and Rotated Rosenbrock’s Function"},
+        {'objective_func': F32022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)), #####TCO aici a ramas
                  'global_value': 600, 'name': "F3: Shifted and full Rotated Expanded Schaffer’s F7"},
-                {'objective_func': F42022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+        {'objective_func': F42022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
                  'global_value': 800, 'name': "F4: Shifted and Rotated Non-Continuous Rastrigin’s Function"},
-                {'objective_func': F52022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+        {'objective_func': F52022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
                  'global_value': 900, 'name': "F5: Shifted and Rotated Levy Function"},
-                {'objective_func': F62022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+        {'objective_func': F62022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
                  'global_value': 1800, 'name': "F6: Hybrid Function 1"},
+        {'objective_func': F72022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+         'global_value': 2000, 'name': "F7: Hybrid Function 2"},
+        {'objective_func': F82022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+         'global_value': 2200, 'name': "F8: Hybrid Function 3"},
+        {'objective_func': F92022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+         'global_value': 2300, 'name': "F9: Composition Function 1"},
+        {'objective_func': F102022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+         'global_value': 2400, 'name': "F10: Composition Function 2"},
+        {'objective_func': F112022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
+         'global_value': 2600, 'name': "F11: Composition Function 3"},
                 {'objective_func': F122022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
                  'global_value': 2700, 'name': "F12: Composition Function 4"},
-                {'objective_func': F102022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
-                 'global_value': 2400, 'name': "F10: Composition Function 2"},
-                {'objective_func': F112022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
-                 'global_value': 2600, 'name': "F11: Composition Function 3"},
-                {'objective_func': F12022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
-                 'global_value': 300, 'name': "F1: Shifted and full Rotated Zakharov Function"},
-                {'objective_func': F82022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
-                 'global_value': 2200, 'name': "F8: Hybrid Function 3"},
-                {'objective_func': F72022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
-                 'global_value': 2000, 'name': "F7: Hybrid Function 2"},
-                {'objective_func': F92022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
-                 'global_value': 2300, 'name': "F9: Composition Function 1"},
-                {'objective_func': F22022_10, 'dimensions': 10, 'bounds': (-100 * numpy.ones(10), 100 * numpy.ones(10)),
-                 'global_value': 400, 'name': "F2: Shifted and Rotated Rosenbrock’s Function"}
+        ]
+
+    problems = [{'objective_func': welded_func, 'dimensions': 4, 'bounds': ([0.1, 0.1, 0.1, 0.1], [2.0, 10., 10., 2.0]),
+                 'global_value': 0, 'name': "Welded Beam Design Problem"},
+                {'objective_func': beam_func, 'dimensions': 5,
+                 'bounds': ([0.1, 0.1, 0.1, 0.1, 0.1], [100.0, 100., 100., 100.0, 100.0]),
+                 'global_value': 0, 'name': "Cantilever Beam Design Problem"},
+                {'objective_func': spring_func, 'dimensions': 3, 'bounds': ([0.05, 0.25, 2.0], [2.0, 1.3, 15.0]),
+                 'global_value': 0, 'name': "Tension-Compression Spring Problem"},
+                {'objective_func': speed_func, 'dimensions': 7,
+                 'bounds': ([2.6, 0.7, 17, 7.3, 7.8, 2.9, 5.0], [3.6, 0.8, 28, 8.3, 8.3, 3.9, 5.5]),
+                 'global_value': 0, 'name': "Speed reducer design problem"},
+                {'objective_func': rolling_func, 'dimensions': 10, 'bounds': (
+                    [125., 10.5, 4, 0.515, 0.515, 0.4, 0.6, 0.3, 0.02, 0.6],
+                    [150., 31.5, 50, 0.6, 0.6, 0.5, 0.7, 0.4, 0.1, 0.85]),
+                 'global_value': 0, 'name': "Speed reducer design problem"}
                 ]
+
 
     heuristics = [ESSAHyperHeuristic(), HHOHeuristic(), HGSHeuristic(), SSAHeuristic(), BESHeuristic(), SMAHeuristic(),
                   CGOHeuristic(),
@@ -144,6 +171,7 @@ class Evaluator:
                   EBESHyperHeuristic(), BESHeuristic(), WOAHeuristic(), CGOHeuristic(), HHOHeuristic(),
                   HGSHeuristic(), SMAHeuristic()]
 
+    heuristics = [TCOHeuristic(), SHADEHeuristic(), CGOHeuristic(), MSAHeuristic(), ABCHeuristic()]
 
 
     def evaluate(self, from_file=False, verbose=True, nr_executions=10):

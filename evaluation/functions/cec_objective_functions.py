@@ -23,6 +23,8 @@ def F12022_10(solutions):
     result = []
     for sol in solutions:
         result.append(func.evaluate(sol))
+        print(func.evaluate(sol))
+        print("------")
     return result
 
 

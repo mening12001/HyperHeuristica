@@ -1,7 +1,8 @@
+from metaheuristic.DE import DE
+from metaheuristic.triangle.TCO import TCO
 
-from metaheuristic.cgo import CGO
 
-class CGOHeuristic:
+class TCOHeuristic:
 
     def optimize(self, objective_func, dimensions, bounds, nr_iterations=200):
         lb, ub = bounds
@@ -13,5 +14,6 @@ class CGOHeuristic:
             "log_to": 'console',
             "save_population": False,
         }
-        model = CGO.OriginalCGO(problem_dict1, epoch=1000, pop_size=200)
+        model = TCO(problem_dict1, epoch=1000, pop_size=200)
         return model.solve()
+

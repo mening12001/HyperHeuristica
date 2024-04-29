@@ -9,11 +9,11 @@ class MSAHeuristic:
         lb, ub = bounds
         problem_dict1 = {
             "fit_func": objective_func,
-            "lb": [lb[0], ] * dimensions,
-            "ub": [ub[0], ] * dimensions,
+            "lb": [lb[i] for i in range(0, dimensions)],
+            "ub": [ub[i] for i in range(0, dimensions)],
             "minmax": "min",
             "log_to": 'console',
             "save_population": False,
         }
-        model = MSA.BaseMSA(problem_dict1, epoch=nr_iterations, pop_size=200)
+        model = MSA.BaseMSA(problem_dict1, epoch=1000, pop_size=200)
         return model.solve()

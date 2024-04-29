@@ -22,7 +22,7 @@ class BaseDE(Optimizer):
         + wf (float): [0.5, 0.95], weighting factor, default = 0.8
         + cr (float): [0.5, 0.95], crossover rate, default = 0.9
         + strategy (int): [0, 5], there are lots of variant version of DE algorithm,
-            + 0: DE/current-to-rand/1/bin
+            + 0: DE/rand/1/bin
             + 1: DE/best/1/bin
             + 2: DE/best/2/bin
             + 3: DE/rand/2/bin
@@ -128,13 +128,25 @@ class BaseDE(Optimizer):
                           self.wf * (self.pop[idx_list[0]][self.ID_POS] - self.pop[idx_list[1]][self.ID_POS])
                 pos_new = self._mutation__(self.pop[idx][self.ID_POS], pos_new)
                 pop.append([pos_new, None])
-        else:
+        elif self.strategy == 5:
             for idx in range(0, self.pop_size):
                 idx_list = np.random.choice(list(set(range(0, self.pop_size)) - {idx}), 3, replace=False)
                 pos_new = self.pop[idx][self.ID_POS] + self.wf * (self.pop[idx_list[0]][self.ID_POS] - self.pop[idx][self.ID_POS]) + \
                           self.wf * (self.pop[idx_list[1]][self.ID_POS] - self.pop[idx_list[2]][self.ID_POS])
                 pos_new = self._mutation__(self.pop[idx][self.ID_POS], pos_new)
                 pop.append([pos_new, None])
+        else:
+            for idx in range(0, self.pop_size):
+                idx_list = np.random.choice(list(set(range(0, self.pop_size)) - {idx}), 3, replace=False)
+                if self.pop[idx_list[0]][self.ID_FIT] < self.pop[idx_list[1]][self.ID_FIT]:
+                    pos_new = self.pop[idx_list[0]][self.ID_POS] + self.wf * \
+                              (self.pop[idx_list[1]][self.ID_POS] - self.pop[idx_list[2]][self.ID_POS])
+                else:
+                    pos_new = self.pop[idx_list[1]][self.ID_POS] + self.wf * (
+                            self.pop[idx_list[0]][self.ID_POS] - self.pop[idx_list[2]][self.ID_POS])
+                pos_new = self._mutation__(self.pop[idx][self.ID_POS], pos_new)
+                pop.append([pos_new, None])
+
         pop = self.update_target_wrapper_population(pop)
 
         # create new pop by comparing fitness of corresponding each member in pop and children
